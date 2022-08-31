@@ -1,9 +1,12 @@
 # import logging
-from motor.motor_asyncio import AsyncIOMotorClient
 
 # log = logging.getLogger(__name__)
 from loguru import logger
+from fastapi import FastAPI
+from loguru import logger
+from motor.motor_asyncio import AsyncIOMotorClient
 
+from app.core.settings.app import AppSettings
 
 class Database:
     client: AsyncIOMotorClient = None
@@ -15,14 +18,12 @@ async def get_database() -> AsyncIOMotorClient:
     return db.client
 
 
-async def connect_to_database():
+async def connect_to_database(app: FastAPI, settings: AppSettings) -> None:
     logger.info("Connecting to MongoDB.")
-    print('testing')
-    # TODO: Move db settings to config
-    path = 'mongodb://localhost:27017'
+    path = settings.database_url
     db.client = AsyncIOMotorClient(path,
-                                   maxPoolSize=3,
-                                   minPoolSize=1)
+                                   maxPoolSize=settings.max_pool_size,
+                                   minPoolSize=settings.min_pool_size)
     logger.info("Connected to MongoDB.")
 
 
