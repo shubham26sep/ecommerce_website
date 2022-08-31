@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 
 from app.api import catalogs
-from app.core.config import get_app_settings
+from app.core.config import settings
 
 from app.db.mongodb import connect_to_database, close_mongo_connection
 from app.core.events import create_start_app_handler, create_stop_app_handler
@@ -33,8 +33,6 @@ from app.core.events import create_start_app_handler, create_stop_app_handler
 
 
 def create_application() -> FastAPI:
-    settings = get_app_settings()
-
     settings.configure_logging()
 
     application = FastAPI(**settings.fastapi_kwargs)
@@ -53,7 +51,7 @@ def create_application() -> FastAPI:
     )
     application.add_event_handler(
         "shutdown",
-        create_stop_app_handler(application),
+        create_stop_app_handler(),
     )
 
     # application.add_exception_handler(HTTPException, http_error_handler)
