@@ -19,7 +19,7 @@ class AppSettings(BaseAppSettings):
     version: str = "0.0.0"
 
     database_url: str
-    database_name: str
+    database_name: str = 'Catalogs'
     max_pool_size: int = 3
     min_pool_size: int = 1
 
