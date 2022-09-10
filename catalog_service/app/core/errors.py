@@ -11,7 +11,7 @@ from starlette.status import HTTP_400_BAD_REQUEST
 
 
 async def http_error_handler(request: Request, exc: HTTPException) -> JSONResponse:
-    return JSONResponse({"errors": [exc.detail]})
+    return JSONResponse({"errors": [exc.detail]}, status_code=HTTP_400_BAD_REQUEST)
 
 
 async def http_422_error_handler(
