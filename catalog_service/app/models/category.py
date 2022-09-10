@@ -6,10 +6,10 @@ from app.db.mongodb import PyObjectId
 
 class CategoryModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    name: str = Field(...)
-    parent: str = Field(...)
-    level: int = Field(...)
-    path: str = Field(...)
+    name: str
+    parent: str
+    level: int
+    path: str
 
     class Config:
         allow_population_by_field_name = True
@@ -25,6 +25,6 @@ class CategoryModel(BaseModel):
         }
 
 
-class CategoryCreate(BaseModel):
+class CategoryInModel(BaseModel):
     name: str
     parent: Optional[str]
