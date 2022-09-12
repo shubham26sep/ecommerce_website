@@ -1,5 +1,5 @@
 from bson import ObjectId
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, Field
 
 from app.db.mongodb import PyObjectId
@@ -28,3 +28,7 @@ class CategoryModel(BaseModel):
 class CategoryInModel(BaseModel):
     name: str
     parent: Optional[str]
+
+
+class CategoryListResponseSchema(BaseModel):
+    categories: List[CategoryModel]

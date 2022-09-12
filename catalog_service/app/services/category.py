@@ -7,6 +7,11 @@ from app.models.category import CategoryModel
 
 class CategoryService:
 
+    async def category_list(self):
+        categories = await CategoryCRUD().list()
+        categories = [CategoryModel(**category) for category in categories]
+        return categories
+
     async def create_category(self, category_data):
         category_data = await self.prepare_category_data(category_data)
         category_id = await CategoryCRUD().create(category_data)
@@ -69,6 +74,10 @@ class CategoryCRUD(DBSessionContext):
         category = await self.db[CategoryCRUD.COLLECTION_NAME].find_one({'_id': ObjectId(category_id)})
         return category
 
-    async def filter(self, query_filter):
-        sub_categories = await self.db[CategoryCRUD.COLLECTION_NAME].find(query_filter)
-        return sub_categories
+    async def list(self, query_filter=None):
+        if query_filter is None:
+            cursor = self.db[CategoryCRUD.COLLECTION_NAME].find()
+        else:
+            cursor = self.db[CategoryCRUD.COLLECTION_NAME].find(query_filter)
+        categories = [category async for category in cursor]
+        return categories
