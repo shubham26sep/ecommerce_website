@@ -1,15 +1,30 @@
 from loguru import logger
 from bson import ObjectId
+from collections import defaultdict
 from app.services import DBSessionContext
 from app.db.mongodb import get_database
-from app.models.category import CategoryModel
+from app.models.category import CategoryModel, CategoryListModel
 
 
 class CategoryService:
 
     async def category_list(self):
+        def create_tree(category, level):
+            root = CategoryListModel(**category)
+            root.subcategories = [create_tree(category, level+1)
+                for category in categories_level.get(level, [])
+                if category['parent'] == root.path]
+            return root
+
         categories = await CategoryCRUD().list()
-        categories = [CategoryModel(**category) for category in categories]
+        categories_level = defaultdict(list)
+        for c in categories:
+            categories_level[c['level']].append(c)
+ 
+        level = 0
+        CategoryListModel.update_forward_refs()
+        categories = [create_tree(category, level+1)
+                      for category in categories_level.get(level, [])]
         return categories
 
     async def create_category(self, category_data):

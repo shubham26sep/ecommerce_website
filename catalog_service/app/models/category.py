@@ -17,10 +17,10 @@ class CategoryModel(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "name": "Jane Doe",
-                "email": "jdoe@example.com",
-                "course": "Experiments, Science, and Fashion in Nanophotonics",
-                "gpa": "3.0",
+                "name": "Men",
+                "parent": "/",
+                "level": 0,
+                "path": "/Men"
             }
         }
 
@@ -30,5 +30,8 @@ class CategoryInModel(BaseModel):
     parent: Optional[str]
 
 
+class CategoryListModel(CategoryModel):
+    subcategories: Optional[List['CategoryModel']]
+
 class CategoryListResponseSchema(BaseModel):
-    categories: List[CategoryModel]
+    categories: List[CategoryListModel]
