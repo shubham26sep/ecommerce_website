@@ -1,5 +1,5 @@
 from loguru import logger
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 from fastapi.encoders import jsonable_encoder
 from starlette import status
 from starlette.exceptions import HTTPException
@@ -7,8 +7,10 @@ from fastapi_cache.decorator import cache
 
 from app.db.mongodb import AsyncIOMotorClient, get_database
 from app.models import SuccessResponseSchema, ErrorResponseSchema
-from app.models.category import CategoryInModel, CategoryListResponseSchema, CategoryModel
+from app.models.category import CategoryInModel, CategoryListResponseSchema
 from app.services.category import CategoryService
+from app.utils import category_utils
+from app.core.config import settings
 
 router = APIRouter(prefix="/catalogs/categories")
 
@@ -18,6 +20,7 @@ router = APIRouter(prefix="/catalogs/categories")
 async def create_category(
     category: CategoryInModel,
     # user: User = Depends(get_current_user_authorizer()),
+    background_tasks: BackgroundTasks,
     db: AsyncIOMotorClient = Depends(get_database),
     ):
     logger.info(category)
@@ -27,13 +30,14 @@ async def create_category(
         logger.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
                 detail=jsonable_encoder(ErrorResponseSchema(statusCode=400, message = str(e))))
+    background_tasks.add_task(category_utils.clear_category_cache)
     return SuccessResponseSchema(data=category)
 
 
 @router.get(
     "/", response_model=SuccessResponseSchema
 )
-@cache(expire=3600)
+@cache(expire=3600, namespace=settings.category_namespace)
 async def category_list(
     # user: User = Depends(get_current_user_authorizer()),
     db: AsyncIOMotorClient = Depends(get_database)
@@ -54,7 +58,8 @@ async def update_category(
     category_id: str,
     category: CategoryInModel,
     # user: User = Depends(get_current_user_authorizer()),
-    db: AsyncIOMotorClient = Depends(get_database),
+    background_tasks: BackgroundTasks,
+    db: AsyncIOMotorClient = Depends(get_database)
     ):
     logger.info(category)
     try:
@@ -63,4 +68,5 @@ async def update_category(
         logger.error(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
                 detail=jsonable_encoder(ErrorResponseSchema(statusCode=400, message = str(e))))
+    background_tasks.add_task(category_utils.clear_category_cache)
     return SuccessResponseSchema(data=category)

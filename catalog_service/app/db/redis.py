@@ -9,7 +9,7 @@ async def connect_to_redis_cluster(settings: AppSettings) -> None:
     logger.info("Connecting to Redis Cluster.")
     startup_nodes = [ClusterNode(host, port) for host, port in settings.redis_nodes]
     rc = RedisCluster(startup_nodes=startup_nodes, decode_responses=True)
-    FastAPICache.init(RedisBackend(rc), prefix="fastapi-cache")
+    FastAPICache.init(RedisBackend(rc), prefix="catalogs")
     #TODO: Add redis test query
     logger.info("Connected to Redis Cluster.")
 
@@ -37,7 +37,7 @@ class RedisBackend(Backend):
 
     async def clear(self, namespace: str = None, key: str = None) -> int:
         if namespace:
-            lua = f"for i, name in ipairs(redis.call('KEYS', '{namespace}:*')) do redis.call('DEL', name); end"
+            lua = f"for i, name in ipairs(redis.call('KEYS', '*:{namespace}:*')) do redis.call('DEL', name); end"
             return await self.redis.eval(lua, numkeys=0)
         elif key:
             return await self.redis.delete(key)
