@@ -22,6 +22,7 @@ class AppSettings(BaseAppSettings):
     database_name: str = 'Catalogs'
     max_pool_size: int = 3
     min_pool_size: int = 1
+    redis_nodes: list = [('127.0.0.1', 7000), ('127.0.0.1', 7001), ('127.0.0.1', 7002)]
 
     # secret_key: SecretStr
 

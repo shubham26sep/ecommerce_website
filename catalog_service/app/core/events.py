@@ -5,6 +5,7 @@ from loguru import logger
 
 from app.core.settings.app import AppSettings
 from app.db.mongodb import connect_to_database, close_mongo_connection
+from app.db.redis import connect_to_redis_cluster
 
 
 def create_start_app_handler(
@@ -13,6 +14,7 @@ def create_start_app_handler(
 ) -> Callable:  # type: ignore
     async def start_app() -> None:
         await connect_to_database(app, settings)
+        await connect_to_redis_cluster(settings)
 
     return start_app
 

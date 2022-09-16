@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from starlette import status
 from starlette.exceptions import HTTPException
+from fastapi_cache.decorator import cache
 
 from app.db.mongodb import AsyncIOMotorClient, get_database
 from app.models import SuccessResponseSchema, ErrorResponseSchema
@@ -32,6 +33,7 @@ async def create_category(
 @router.get(
     "/", response_model=SuccessResponseSchema
 )
+@cache(expire=3600)
 async def category_list(
     # user: User = Depends(get_current_user_authorizer()),
     db: AsyncIOMotorClient = Depends(get_database)
