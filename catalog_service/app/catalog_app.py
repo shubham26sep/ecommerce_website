@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from starlette.exceptions import HTTPException
 from fastapi.exceptions import RequestValidationError
 
-from app.api import category
+from app.api import category, products
 from app.core.config import settings
 from app.core.errors import http_error_handler, http_422_error_handler
 from app.core.events import create_start_app_handler, create_stop_app_handler
@@ -36,6 +36,9 @@ def create_application() -> FastAPI:
     application.include_router(
         category.router,
         tags=["categories"])
+    application.include_router(
+        products.router,
+        tags=["products"])
     # application.include_router(api_router, prefix=settings.api_prefix)
 
     return application

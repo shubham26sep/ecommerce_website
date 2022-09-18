@@ -7,6 +7,7 @@ class SuccessResponseSchema(BaseModel):
     message: Optional[str]
     success: Optional[bool]=True
 
+
 class ErrorResponseSchema(BaseModel):
     statusCode: int
     message : Optional[str] = None

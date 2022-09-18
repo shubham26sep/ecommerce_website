@@ -55,7 +55,7 @@ class CategoryService:
         if 'parent' not in category_data or category_data['parent'] is None:
             category_data['level'] = 0
             category_data['parent'] = '/'
-            category_data['path'] = f"/{category_data['name']}"
+            category_data['path'] = f"{category_data['name']}"
         else:
             parent_category_id = category_data['parent']
             parent_category = await CategoryCRUD().get(parent_category_id)
@@ -63,7 +63,7 @@ class CategoryService:
                 raise Exception('Invalid parent category id')
             category_data['level'] = parent_category['level'] + 1
             if category_data['level'] == 1:
-                category_data['parent'] = f"/{parent_category['name']}"
+                category_data['parent'] = f"{parent_category['name']}"
             else:
                 category_data['parent'] = f"{parent_category['parent']}/{parent_category['name']}"
             category_data['path'] =  f"{parent_category['path']}/{category_data['name']}"
