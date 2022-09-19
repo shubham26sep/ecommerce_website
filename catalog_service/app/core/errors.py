@@ -22,3 +22,6 @@ async def http_422_error_handler(
         {"errors": exc.errors()},
         status_code=HTTP_400_BAD_REQUEST,
     )
+
+def custom_error_message(error):
+	return JSONResponse(error, status_code=HTTP_400_BAD_REQUEST)

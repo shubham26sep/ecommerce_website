@@ -24,6 +24,10 @@ class AppSettings(BaseAppSettings):
     min_pool_size: int = 1
     category_namespace: str = 'categories'
     redis_nodes: list = [('127.0.0.1', 7000), ('127.0.0.1', 7001), ('127.0.0.1', 7002)]
+    aws_access_key_id: str
+    aws_secret_access_key: str
+    aws_region: str
+    s3_image_bucket: str
 
     # secret_key: SecretStr
 
