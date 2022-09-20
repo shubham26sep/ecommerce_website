@@ -27,7 +27,7 @@ class AppSettings(BaseAppSettings):
     aws_access_key_id: str
     aws_secret_access_key: str
     aws_region: str
-    s3_image_bucket: str
+    s3_image_upload_bucket: str
 
     # secret_key: SecretStr
 

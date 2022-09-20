@@ -28,6 +28,7 @@ class ProductModel(BaseModel):
     categories: dict
     prices: dict
     is_visible: bool
+    images: List[str]
     variants: List[ProductVariantModel]
 
     class Config:
@@ -55,5 +56,5 @@ class ProductInModel(BaseModel):
     category_id: str
     price: float
     is_visible: bool = True
-    image_url: Optional[List[ImageInModel]]
+    images: Optional[List[ImageInModel]]
     variants: Optional[List[ProductVariantModel]]

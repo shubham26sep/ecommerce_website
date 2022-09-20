@@ -5,6 +5,7 @@ from app.services import DBSessionContext
 from app.db.mongodb import get_database
 from app.models.products import ProductModel
 from app.services.category import CategoryCRUD
+from app.services.images import ImageService
 
 
 class ProductService:
@@ -24,11 +25,17 @@ class ProductService:
             categories[f'level{i}'].append('/'.join(path[:i+1]))
         return categories
 
+    async def upload_images(self, images):
+        image_service = ImageService()
+        images = [await image_service.copy_image_from_presigned_url(image['image_url']) for image in images]
+        return images
+            
     async def prepare_product_data(self, product_data):
         category_id = product_data.pop('category_id')
         category = await CategoryCRUD().get(category_id)
         product_data['categories'] = self.get_category_levels(category)
         product_data['prices'] = {'price': product_data['price'], 'special_price': ''}
+        product_data['images'] = await self.upload_images(product_data['images'])
         return product_data
 
 
