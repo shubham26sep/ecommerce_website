@@ -20,7 +20,8 @@ class S3Utils(object):
         async with session.create_client('s3', region_name=self.region,
                                          aws_secret_access_key=self.aws_secret_access_key,
                                          aws_access_key_id=self.aws_access_key_id) as client:
-            file_upload_response = await client.put_object(Bucket=bucket, Key=key, Body=fileobject)
+            file_upload_response = await client.put_object(
+                Bucket=bucket, Key=key, ContentType='image/jpeg', Body=fileobject)
 
             if file_upload_response["ResponseMetadata"]["HTTPStatusCode"] == 200:
                 logger.info(f"File uploaded path : https://{bucket}.s3.{self.region}.amazonaws.com/{key}")

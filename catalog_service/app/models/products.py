@@ -1,7 +1,8 @@
+import requests
 from enum import Enum
 from bson import ObjectId
 from typing import List, Optional
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field, HttpUrl, validator
 
 from app.db.mongodb import PyObjectId
 
@@ -47,6 +48,13 @@ class ProductModel(BaseModel):
 
 class ImageInModel(BaseModel):
     image_url: HttpUrl
+
+    @validator('image_url')
+    def validate_image_url(cls, url):
+        resp = requests.get(url)
+        if resp.status_code != 200:
+            raise ValueError('Invalid/Expired image url')
+        return url
 
 
 class ProductInModel(BaseModel):
